@@ -14,6 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) die();
 if( !defined( __NAMESPACE__ . '\PATH' ) )
 	define( __NAMESPACE__ . '\PATH', plugin_dir_path(__FILE__) );
 
+if( !defined( __NAMESPACE__ . '\URL' ) )
+	define( __NAMESPACE__ . '\URL', plugin_dir_url( __FILE__ ) );
+
 if( ! class_exists( '\Vk_custom_libs\Template' ) )
     require_once( namespace\PATH.'includes/vk_libraries/class_vk_template.php' );
 
@@ -27,6 +30,7 @@ class Wc_Custom_Shortcuts
     private function __construct() 
     {
 
+        add_action( 'admin_enqueue_scripts', [ $this, 'add_assets' ] );
         add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'add_order_data_text_area' ] );
 
     }
@@ -38,6 +42,27 @@ class Wc_Custom_Shortcuts
             self::$instance = new self;
 
         return self::$instance;
+
+    }
+
+    public function add_assets( $page ) : void 
+    {
+
+        if( $page != 'post-new.php' )
+            return;
+
+        $screen = get_current_screen();
+
+        if( $screen->post_type != 'shop_order' )
+            return;
+
+        wp_enqueue_script( 
+            'wc_custom_shortcuts_script', 
+            namespace\URL . '/assets/script.js', 
+            array( 'jquery' ), 
+            '1.0.0', 
+            true 
+        );
 
     }
 
