@@ -27,7 +27,7 @@ class Wc_Custom_Shortcuts
     private function __construct() 
     {
 
-        add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'test' ] );
+        add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'add_order_data_text_area' ] );
 
     }
 
@@ -41,7 +41,7 @@ class Wc_Custom_Shortcuts
 
     }
 
-    public function test() : void 
+    public function add_order_data_text_area() : void 
     {
 
         $template = new Template();
