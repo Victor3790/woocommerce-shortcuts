@@ -24,6 +24,7 @@ includes/vk_libraries/
 
 node_modules/
 dist/
+assets/select2-4.0.13/
 
 ################
 # Index files  #
