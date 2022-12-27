@@ -32,6 +32,7 @@ class Wc_Custom_Shortcuts
 
         add_action( 'admin_enqueue_scripts', [ $this, 'add_assets' ] );
         add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'add_order_data_text_area' ] );
+        add_action( 'add_meta_boxes', [ $this, 'add_custom_metabox' ] );
 
     }
 
@@ -48,7 +49,7 @@ class Wc_Custom_Shortcuts
     public function add_assets( $page ) : void 
     {
 
-        if( $page != 'post-new.php' )
+        if( $page != 'post-new.php' && $page != 'post.php' )
             return;
 
         $screen = get_current_screen();
@@ -75,6 +76,28 @@ class Wc_Custom_Shortcuts
         $view = $template->load( $file );
 
         echo $view;
+
+    }
+
+    public function add_custom_metabox() : void 
+    {
+
+        add_meta_box( 
+            'wc-custom-shortcuts-metabox', 
+            'Custom shortcuts', 
+            [ $this, 'render_metabox_content' ], 
+            'shop_order', 
+            'advanced', 
+            'high'
+        );
+
+    }
+
+    public function render_metabox_content() 
+    {
+
+        echo '<button id="add_product">Add product</button>';
+        echo '<button id="add_shipping">Add shipping</button>';
 
     }
     
