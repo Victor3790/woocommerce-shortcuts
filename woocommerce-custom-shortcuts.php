@@ -37,8 +37,7 @@ class Wc_Custom_Shortcuts
         add_action( 'admin_menu', [$this, 'register_page'] );
         add_action( 'admin_init', [$this, 'register_settings'] );
 
-        //add_action( 'add_option_sbi-user', [ $this, 'change_autoload_to_no' ], 10, 2 );
-        //add_action( 'add_option_sbi-password', [ $this, 'change_autoload_to_no' ], 10, 2 );
+        add_action( 'add_option_wc-custom-shortcuts-products', [ $this, 'change_autoload_to_no' ], 10, 2 );
 
         add_action( 'admin_enqueue_scripts', [ $this, 'add_assets' ] );
         add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'add_order_data_text_area' ] );
@@ -105,7 +104,8 @@ class Wc_Custom_Shortcuts
     public function echo_products_options() 
     {
 
-        echo '<h1>Hello!</h1>';
+        echo '<select id="select-products" name="select-products" multiple="multiple" style="width: 90%;"></select>';
+        echo '<input type="hidden" name="wc-custom-shortcuts-products">';
 
     }
 
@@ -123,11 +123,11 @@ class Wc_Custom_Shortcuts
     public function add_assets( $page ) : void 
     {
 
-        if( $page == 'wc-custom-shortcuts-page' ) {
+        if( $page == 'toplevel_page_wc-custom-shortcuts-page' ) {
 
             wp_enqueue_style( 
                 'wc_custom_shortcuts_select2_styles', 
-                namespace\URL . '/select2-4.0.13/dist/css/select2.min.css', 
+                namespace\URL . '/assets/select2-4.0.13/dist/css/select2.min.css', 
                 array(), 
                 '4.0.13', 
                 'all'
@@ -135,11 +135,32 @@ class Wc_Custom_Shortcuts
 
             wp_enqueue_script( 
                 'wc_custom_shortcuts_select2_script', 
-                namespace\URL . '/select2-4.0.13/dist/js/select2.min.js', 
+                namespace\URL . '/assets/select2-4.0.13/dist/js/select2.min.js', 
                 array( 'jquery' ), 
                 '4.0.13', 
                 true 
             );
+
+            wp_enqueue_script( 
+                'wc_custom_shortcuts_options_script', 
+                namespace\URL . '/assets/options-script.js', 
+                array( 'wc_custom_shortcuts_select2_script' ), 
+                '1.0.0', 
+                true 
+            );
+
+            wp_add_inline_script(
+				'wc_custom_shortcuts_options_script', 
+				'const WC_CUSTOM_SHORTCUTS_DATA = ' . 
+					json_encode( 
+						array( 
+							'ajax_url' => admin_url( 'admin-ajax.php' ),
+                            'selected_products' => get_option( 'wc-custom-shortcuts-products' ),
+							'security' => wp_create_nonce( 'search-products' )
+						) 
+					),
+				'before'
+			);
 
             return; 
 
