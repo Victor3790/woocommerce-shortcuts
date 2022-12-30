@@ -1,11 +1,57 @@
 jQuery( function ( $ ) { 
 
+    // Fill up billing data
     $( '#wc_custom_shortcuts_add_order_data' ).click( function(){
 
         let billing_order_data_column = $( 'input[name^="_billing_"]' ).parents( '.order_data_column' );
-        let order_data = $( '#wc_custom_shortcuts_order_data' ).val();
+        let order_raw_data = $( '#wc_custom_shortcuts_order_data' ).val().split( '\n' );
 
-        console.log( order_data );
+        if( order_raw_data[0] === '' )
+            return;
+
+        let order_data = {};
+        let full_name = order_raw_data[0].split( ' ' );
+
+        let phone_regex = RegExp('[0-9]+', 'g');
+        let cif_regex = RegExp('[0-9]+', 'g');
+
+        order_data['name'] = full_name[0];
+        $('input[name="_billing_first_name"]').val( order_data['name'] );
+        
+        if( typeof full_name[1] !== 'undefined'  ) {
+
+            order_data['last_name'] = full_name[1];
+            $('input[name="_billing_last_name"]').val( order_data['last_name'] );
+
+        }
+
+        if( typeof order_raw_data[1] !== 'undefined' && order_raw_data[1] !== '' ) {
+
+            order_data['address'] = order_raw_data[1];
+            $('input[name="_billing_address_1"]').val( order_data['address'] );
+
+        }
+
+        if( typeof order_raw_data[2] !== 'undefined' && order_raw_data[2] !== '' ) {
+
+            order_data['phone'] = phone_regex.exec( order_raw_data[2] )[0];
+            $('input[name="_billing_phone"]').val( order_data['phone'] );
+
+        }
+
+        //  TODO: Ask how the cif field was added.
+        if( typeof order_raw_data[3] !== 'undefined' && order_raw_data[3] !== '' ) {
+
+            order_data['cif'] = cif_regex.exec( order_raw_data[3] )[0];
+
+        }
+
+        if( typeof order_raw_data[4] !== 'undefined' && order_raw_data[4] !== '' ) {
+
+            order_data['state'] = order_raw_data[4];
+            $('input[name="_billing_state"]').val( order_data['state'] );
+
+        }
 
         billing_order_data_column.find( '.edit_address' ).show();
         billing_order_data_column.find( '.address' ).hide();
