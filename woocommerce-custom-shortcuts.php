@@ -127,7 +127,7 @@ class Wc_Custom_Shortcuts
 
             wp_enqueue_style( 
                 'wc_custom_shortcuts_select2_styles', 
-                namespace\URL . '/assets/select2-4.0.13/dist/css/select2.min.css', 
+                namespace\URL . 'assets/select2-4.0.13/dist/css/select2.min.css', 
                 array(), 
                 '4.0.13', 
                 'all'
@@ -135,18 +135,18 @@ class Wc_Custom_Shortcuts
 
             wp_enqueue_script( 
                 'wc_custom_shortcuts_select2_script', 
-                namespace\URL . '/assets/select2-4.0.13/dist/js/select2.min.js', 
+                namespace\URL . 'assets/select2-4.0.13/dist/js/select2.min.js', 
                 array( 'jquery' ), 
                 '4.0.13', 
-                true 
+                false 
             );
 
             wp_enqueue_script( 
                 'wc_custom_shortcuts_options_script', 
-                namespace\URL . '/assets/options-script.js', 
+                namespace\URL . 'assets/options-script.js', 
                 array( 'wc_custom_shortcuts_select2_script' ), 
                 '1.0.0', 
-                true 
+                false 
             );
 
             wp_add_inline_script(
@@ -176,10 +176,26 @@ class Wc_Custom_Shortcuts
 
         wp_enqueue_script( 
             'wc_custom_shortcuts_script', 
-            namespace\URL . '/assets/script.js', 
+            namespace\URL . 'assets/script.js', 
             array( 'jquery' ), 
             '1.0.0', 
-            true 
+            false 
+        );
+
+        wp_enqueue_style( 
+            'wc_custom_shortcuts_bootstrap', 
+            namespace\URL . 'assets/bootstrap-grid.min.css', 
+            array(), 
+            '5.0.2', 
+            'all'
+        );
+
+        wp_enqueue_style( 
+            'wc_custom_shortcuts_styles', 
+            namespace\URL . 'assets/styles.css', 
+            array(), 
+            '1.0.0', 
+            'all'
         );
 
     }
@@ -210,11 +226,35 @@ class Wc_Custom_Shortcuts
 
     }
 
-    public function render_metabox_content() 
+    public function render_metabox_content() : void 
     {
 
-        echo '<button id="add_product">Add product</button>';
-        echo '<button id="add_shipping">Add shipping</button>';
+        $json_products = get_option( 'wc-custom-shortcuts-products', null );
+
+        if( empty( $json_products ) ) {
+
+            echo '<h3>No hay productos para mostrar</h3>';
+            return;
+
+        }
+
+        $products = json_decode( $json_products, true );
+
+        foreach ( $products as $key => $product ) {
+        
+            $thumbnail_url = wp_get_attachment_image_src( get_post_thumbnail_id( $product['id'] ), 'single-post-thumbnail' );
+            $products[ $key ]['thumbnail_url'] = $thumbnail_url[0];
+
+        }
+
+        $template = new Template();
+
+        $file = namespace\PATH.'templates/products.php';
+        $view = $template->load( $file, $products );
+
+        echo $view;
+        //echo '<button id="add_product">Add product</button>';
+        //echo '<button id="add_shipping">Add shipping</button>';
 
     }
     

@@ -1,0 +1,20 @@
+a.woocommerce-custom-shortcuts-add-product:focus
+{
+
+    box-shadow: none !important;
+
+}
+
+.woocommerce-custom-shortcuts-product 
+{
+
+    margin-top: 20px;
+
+}
+
+.woocommerce-custom-shortcuts-add-shipping 
+{
+
+    margin-top: 60px;
+
+}

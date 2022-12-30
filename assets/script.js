@@ -58,7 +58,8 @@ jQuery( function ( $ ) {
 
     });
 
-    $( '#add_product' ).click( function( e ){
+    // Add product to order 
+    $( '.woocommerce-custom-shortcuts-add-product' ).click( function( e ){
 
         e.preventDefault();
 
@@ -70,10 +71,18 @@ jQuery( function ( $ ) {
             }
         });
 
+        $( '#wc-custom-shortcuts-metabox' ).block({
+            message: null,
+            overlayCSS: {
+                background: '#fff',
+                opacity: 0.6
+            }
+        });
+
         let add_items = [];
 
         add_items.push( {
-            'id' : 60,
+            'id' : $(this).data('product-id'),
             'qty': 1
         } );
 
@@ -101,8 +110,10 @@ jQuery( function ( $ ) {
 
                     //$( '#woocommerce-order-items' ).trigger('order-totals-recalculate-before');
                     $( '#woocommerce-order-items' ).unblock();
+                    $( '#wc-custom-shortcuts-metabox' ).unblock();
                 } else {
                     $( '#woocommerce-order-items' ).unblock();
+                    $( '#wc-custom-shortcuts-metabox' ).unblock();
                     window.alert( response.data.error );
                 }
             },
