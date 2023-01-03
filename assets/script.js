@@ -108,7 +108,6 @@ jQuery( function ( $ ) {
                         $( 'ul.order_notes' ).append( $( response.data.notes_html ).find( 'li' ) );
                     }
 
-                    //$( '#woocommerce-order-items' ).trigger('order-totals-recalculate-before');
                     $( '#woocommerce-order-items' ).unblock();
                     $( '#wc-custom-shortcuts-metabox' ).unblock();
                 } else {
@@ -128,11 +127,21 @@ jQuery( function ( $ ) {
 
     });
 
+    // Add shipping to order 
+
     $( '#add_shipping' ).click( function( e ){
 
         e.preventDefault();
 
         $( '#woocommerce-order-items' ).block({
+            message: null,
+            overlayCSS: {
+                background: '#fff',
+                opacity: 0.6
+            }
+        });
+
+        $( '#wc-custom-shortcuts-metabox' ).block({
             message: null,
             overlayCSS: {
                 background: '#fff',
@@ -147,7 +156,6 @@ jQuery( function ( $ ) {
             dataType : 'json'
         };
 
-        //data = wc_meta_boxes_order_items.filter_data( 'add_shipping', data );
 
         $.post( woocommerce_admin_meta_boxes.ajax_url, data, function( response ) {
             if ( response.success ) {
@@ -158,25 +166,21 @@ jQuery( function ( $ ) {
                 } );
                 $('tr.shipping').find('input[name^="shipping_cost"]').val( WC_CUSTOM_SHORTCUTS_DATA.shipping_price );
                 $('tr.shipping').find('option[value="flat_rate"]').attr('selected', true);
-                save_line_items();
+                save_line_items().then(()=>{ 
+                    $( '#woocommerce-order-items' ).unblock();
+                    $( '#wc-custom-shortcuts-metabox' ).unblock();
+                });
             } else {
                 window.alert( response.data.error );
+                $( '#woocommerce-order-items' ).unblock();
+                $( '#wc-custom-shortcuts-metabox' ).unblock();
             }
-            $( '#woocommerce-order-items' ).unblock();
         });
 
     });
 
-    function save_line_items() 
+    async function save_line_items() 
     {
-
-        $( '#woocommerce-order-items' ).block({
-            message: null,
-            overlayCSS: {
-                background: '#fff',
-                opacity: 0.6
-            }
-        });
 
         var data = {
             order_id: woocommerce_admin_meta_boxes.post_id,
@@ -185,11 +189,7 @@ jQuery( function ( $ ) {
             security: woocommerce_admin_meta_boxes.order_item_nonce
         };
 
-        //data = wc_meta_boxes_order_items.filter_data( 'save_line_items', data );
-
-        //wc_meta_boxes_order_items.block();
-
-        $.ajax({
+        await $.ajax({
             url:  woocommerce_admin_meta_boxes.ajax_url,
             data: data,
             type: 'POST',
@@ -204,12 +204,8 @@ jQuery( function ( $ ) {
                         $( 'ul.order_notes' ).append( $( response.data.notes_html ).find( 'li' ) );
                     }
 
-                    //wc_meta_boxes_order_items.reloaded_items();
-                    //wc_meta_boxes_order_items.unblock();
-                    $( '#woocommerce-order-items' ).unblock();
                 } else {
-                    //wc_meta_boxes_order_items.unblock();
-                    $( '#woocommerce-order-items' ).unblock();
+
                     window.alert( response.data.error );
                 }
             },
