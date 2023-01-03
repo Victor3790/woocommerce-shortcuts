@@ -156,7 +156,7 @@ jQuery( function ( $ ) {
                     order_id: woocommerce_admin_meta_boxes.post_id,
                     status: $( '#order_status' ).val()
                 } );
-                $('tr.shipping').find('input[name^="shipping_cost"]').val(100);
+                $('tr.shipping').find('input[name^="shipping_cost"]').val( WC_CUSTOM_SHORTCUTS_DATA.shipping_price );
                 $('tr.shipping').find('option[value="flat_rate"]').attr('selected', true);
                 save_line_items();
             } else {

@@ -1,6 +1,7 @@
 jQuery( function ( $ ) {
 
   //Initialize the products controller
+
   $('#select-products').select2({
     minimumInputLength: 3,
     ajax: {
@@ -9,7 +10,7 @@ jQuery( function ( $ ) {
       type: 'GET',
       data: function( params ) {
         let query = {
-            action: 'woocommerce_json_search_products',
+            action: 'woocommerce_json_search_products_and_variations',
             security: WC_CUSTOM_SHORTCUTS_DATA.security,
             term: params.term
         }
@@ -32,19 +33,39 @@ jQuery( function ( $ ) {
   });
 
   // Get the products previously selected
-  let selected_products = JSON.parse( WC_CUSTOM_SHORTCUTS_DATA.selected_products );
 
-  $.each( selected_products, function( index, product ) {
+  ( function() {
 
-    let option = new Option( product.text, product.id, true, true );
-    $('#select-products').append(option).trigger('change');
+    if( WC_CUSTOM_SHORTCUTS_DATA.selected_products === '' )
+      return; 
+
+    let selected_products = JSON.parse( WC_CUSTOM_SHORTCUTS_DATA.selected_products );
+
+    $.each( selected_products, function( index, product ) {
+  
+      let option = new Option( product.text, product.id, true, true );
+      $('#select-products').append(option).trigger('change');
+  
+    });
+
+    load_data();
+
+  })();
+
+  // Renew the data in the option input
+
+  $('#select-products').on('change', function(){
+
+    load_data();
 
   });
 
-  // Renew the data in the option input
-  $('#select-products').on('change', function(){
+  // Load the selected data in the option input 
 
-    let product_options = $(this).select2('data');
+  function load_data() 
+  {
+
+    let product_options = $('#select-products').select2('data');
     let products = [];
 
 
@@ -56,6 +77,6 @@ jQuery( function ( $ ) {
 
     $('input[name="wc-custom-shortcuts-products"]').val( JSON.stringify( products ) );
 
-  });
+  }
 
 });

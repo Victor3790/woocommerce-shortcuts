@@ -38,6 +38,7 @@ class Wc_Custom_Shortcuts
         add_action( 'admin_init', [$this, 'register_settings'] );
 
         add_action( 'add_option_wc-custom-shortcuts-products', [ $this, 'change_autoload_to_no' ], 10, 2 );
+        add_action( 'add_option_wc-custom-shortcuts-shipping-price', [ $this, 'change_autoload_to_no' ], 10, 2 );
 
         add_action( 'admin_enqueue_scripts', [ $this, 'add_assets' ] );
         add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'add_order_data_text_area' ] );
@@ -75,10 +76,14 @@ class Wc_Custom_Shortcuts
 
         $settings_sections = array(
             'wc-custom-shortcuts-products-section' => array(
-                'section_title' => 'Productos', 
+                'section_title' => 'Configuración.', 
                 'settings' => array(
                     'wc-custom-shortcuts-products' => array(
+                        'field_label' => 'Productos a mostrar en el atajo:',
                         'echo_field_callback' => [ $this, 'echo_products_options' ]
+                    ), 
+                    'wc-custom-shortcuts-shipping-price' => array(
+                        'field_label' => 'Precio de envío:'
                     )
                 )
             )
@@ -198,6 +203,17 @@ class Wc_Custom_Shortcuts
             'all'
         );
 
+        wp_add_inline_script(
+            'wc_custom_shortcuts_script', 
+            'const WC_CUSTOM_SHORTCUTS_DATA = ' . 
+                json_encode( 
+                    array( 
+                        'shipping_price' => get_option( 'wc-custom-shortcuts-shipping-price' )
+                    ) 
+                ),
+            'before'
+        );
+
     }
 
     public function add_order_data_text_area() : void 
@@ -230,10 +246,11 @@ class Wc_Custom_Shortcuts
     {
 
         $json_products = get_option( 'wc-custom-shortcuts-products', null );
+        $shipping_price = get_option( 'wc-custom-shortcuts-shipping-price', null );
 
-        if( empty( $json_products ) ) {
+        if( empty( $json_products ) || empty( $shipping_price ) ) {
 
-            echo '<h3>No hay productos para mostrar</h3>';
+            echo '<h5>Faltan datos de configuración.</h5>';
             return;
 
         }
@@ -253,8 +270,6 @@ class Wc_Custom_Shortcuts
         $view = $template->load( $file, $products );
 
         echo $view;
-        //echo '<button id="add_product">Add product</button>';
-        //echo '<button id="add_shipping">Add shipping</button>';
 
     }
     
