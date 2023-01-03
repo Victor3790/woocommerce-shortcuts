@@ -258,8 +258,26 @@ class Wc_Custom_Shortcuts
         $products = json_decode( $json_products, true );
 
         foreach ( $products as $key => $product ) {
+
         
             $thumbnail_url = wp_get_attachment_image_src( get_post_thumbnail_id( $product['id'] ), 'single-post-thumbnail' );
+            $products[ $key ]['thumbnail_url'] = $thumbnail_url[0];
+
+            if( $thumbnail_url )
+                continue;
+
+            $product_object = wc_get_product( $product['id'] );
+            
+            if( ! is_a( $product_object, 'WC_Product_Variation' ) ) {
+
+                $products[ $key ]['thumbnail_url'] = '';
+                continue;
+
+            }
+
+            $parent_data = $product_object->get_parent_data();
+
+            $thumbnail_url = wp_get_attachment_image_src( $parent_data['image_id'], 'single-post-thumbnail' );
             $products[ $key ]['thumbnail_url'] = $thumbnail_url[0];
 
         }
