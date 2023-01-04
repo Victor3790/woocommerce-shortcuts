@@ -27,29 +27,65 @@ jQuery( function ( $ ) {
 
         if( typeof order_raw_data[1] !== 'undefined' && order_raw_data[1] !== '' ) {
 
-            order_data['address'] = order_raw_data[1];
-            $('input[name="_billing_address_1"]').val( order_data['address'] );
+            order_data['phone'] = phone_regex.exec( order_raw_data[1] )[0];
+            $('input[name="_billing_phone"]').val( order_data['phone'] );
 
         }
 
         if( typeof order_raw_data[2] !== 'undefined' && order_raw_data[2] !== '' ) {
 
-            order_data['phone'] = phone_regex.exec( order_raw_data[2] )[0];
-            $('input[name="_billing_phone"]').val( order_data['phone'] );
+            order_data['email'] = order_raw_data[2];
+            $('input[name="_billing_email"]').val( order_data['email'] );
 
         }
 
-        //  TODO: Ask how the cif field was added.
         if( typeof order_raw_data[3] !== 'undefined' && order_raw_data[3] !== '' ) {
 
-            order_data['cif'] = cif_regex.exec( order_raw_data[3] )[0];
+            order_data['address'] = order_raw_data[3];
+            $('input[name="_billing_address_1"]').val( order_data['address'] );
 
         }
 
         if( typeof order_raw_data[4] !== 'undefined' && order_raw_data[4] !== '' ) {
-
             order_data['state'] = order_raw_data[4];
             $('input[name="_billing_state"]').val( order_data['state'] );
+
+        }
+
+        if( typeof order_raw_data[5] !== 'undefined' && order_raw_data[5] !== '' ) {
+
+            order_data['cif'] = cif_regex.exec( order_raw_data[5] )[0];
+
+            if( $('input[name="_numero_de_identificacion"]').length ) {
+
+                $('input[name="_numero_de_identificacion"]').val( order_data['cif'] );
+    
+            }
+
+        }
+
+        if( $('select[name="_billing_country"]').length ) {
+
+            $('select[name="_billing_country"]').find('option[value="CO"]').prop( 'selected', true );
+            $('select[name="_billing_country"]').trigger('change');
+
+        }
+
+        if( $('select[name="_forma_de_pago"]').length ) {
+
+            $('select[name="_forma_de_pago"]').find('option[value="CASH"]').prop( 'selected', true );
+
+        }
+
+        if( $('select[name="_medio_de_pago"]').length ) {
+
+            $('select[name="_medio_de_pago"]').find('option[value="CASH"]').prop( 'selected', true );
+
+        }
+
+        if( $('select[name="_tipo_de_identificacion"]').length ) {
+
+            $('select[name="_tipo_de_identificacion"]').find('option[value="CC"]').prop( 'selected', true );
 
         }
 
