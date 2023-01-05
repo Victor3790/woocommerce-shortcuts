@@ -10,10 +10,7 @@ jQuery( function ( $ ) {
             return;
 
         let order_data = {};
-        let full_name = order_raw_data[0].split( ' ' );
-
-        let phone_regex = RegExp('[0-9]+', 'g');
-        let cif_regex = RegExp('[0-9]+', 'g');
+        let full_name = order_raw_data[0].trim().split( ' ' );
 
         let name = '';
         let last_name = '';
@@ -48,40 +45,22 @@ jQuery( function ( $ ) {
 
         if( typeof order_raw_data[1] !== 'undefined' && order_raw_data[1] !== '' ) {
 
-            order_data['phone'] = phone_regex.exec( order_raw_data[1] )[0];
+            order_data['phone'] = order_raw_data[1].trim().replace(/\D/g, '');
             $('input[name="_billing_phone"]').val( order_data['phone'] );
 
         }
 
         if( typeof order_raw_data[2] !== 'undefined' && order_raw_data[2] !== '' ) {
 
-            order_data['email'] = order_raw_data[2];
+            order_data['email'] = order_raw_data[2].trim();
             $('input[name="_billing_email"]').val( order_data['email'] );
 
         }
 
         if( typeof order_raw_data[3] !== 'undefined' && order_raw_data[3] !== '' ) {
 
-            order_data['address'] = order_raw_data[3];
+            order_data['address'] = order_raw_data[3].trim();
             $('input[name="_billing_address_1"]').val( order_data['address'] );
-
-        }
-
-        if( typeof order_raw_data[4] !== 'undefined' && order_raw_data[4] !== '' ) {
-            order_data['state'] = order_raw_data[4];
-            $('input[name="_billing_state"]').val( order_data['state'] );
-
-        }
-
-        if( typeof order_raw_data[5] !== 'undefined' && order_raw_data[5] !== '' ) {
-
-            order_data['cif'] = cif_regex.exec( order_raw_data[5] )[0];
-
-            if( $('input[name="_numero_de_identificacion"]').length ) {
-
-                $('input[name="_numero_de_identificacion"]').val( order_data['cif'] );
-    
-            }
 
         }
 
@@ -89,6 +68,48 @@ jQuery( function ( $ ) {
 
             $('select[name="_billing_country"]').find('option[value="CO"]').prop( 'selected', true );
             $('select[name="_billing_country"]').trigger('change');
+
+        }
+
+        if( $('select[name="_billing_state"]').length ) {
+
+            if( typeof order_raw_data[4] !== 'undefined' && order_raw_data[4] !== '' ) {
+
+                order_data['state'] = order_raw_data[4].trim();
+                
+                $('option:contains("'+ order_data['state'] +'")').prop( 'selected', true );
+                $('select[name="_billing_state"]').trigger('change');
+    
+            }
+
+        }
+
+        if( $('select[name="_billing_city"]').length ) {
+
+            if( typeof order_raw_data[5] !== 'undefined' && order_raw_data[5] !== '' ) {
+
+                order_data['city'] = order_raw_data[5].trim();
+
+                setTimeout( function(){
+
+                    $('select[name="_billing_city"]').find('option[value="' + order_data['city'] + '"]').prop( 'selected', true );
+                    $('select[name="_billing_city"]').trigger('change');
+
+                }, 3000 );
+    
+            }
+
+        }
+
+        if( typeof order_raw_data[6] !== 'undefined' && order_raw_data[6] !== '' ) {
+
+            order_data['cif'] = order_raw_data[6].trim().replace(/\D/g, '');
+
+            if( $('input[name="_numero_de_identificacion"]').length ) {
+
+                $('input[name="_numero_de_identificacion"]').val( order_data['cif'] );
+    
+            }
 
         }
 
