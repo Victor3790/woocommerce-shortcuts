@@ -15,12 +15,33 @@ jQuery( function ( $ ) {
         let phone_regex = RegExp('[0-9]+', 'g');
         let cif_regex = RegExp('[0-9]+', 'g');
 
-        order_data['name'] = full_name[0];
+        let name = '';
+        let last_name = '';
+
+        if( full_name.length == 2 ) {
+
+            name = full_name[0];
+            last_name = full_name[1];
+
+        } else if( full_name.length == 3 ) {
+
+            name = full_name[0];
+            last_name = full_name[2];
+
+        } else if( full_name.length == 4 ) {
+
+            name = full_name[0] + ' ' + full_name[1];
+            last_name = full_name[2] + ' ' + full_name[3];
+
+        }
+
+
+        order_data['name'] = name;
         $('input[name="_billing_first_name"]').val( order_data['name'] );
         
-        if( typeof full_name[1] !== 'undefined'  ) {
+        if( typeof last_name !== 'undefined'  ) {
 
-            order_data['last_name'] = full_name[1];
+            order_data['last_name'] = last_name;
             $('input[name="_billing_last_name"]').val( order_data['last_name'] );
 
         }
