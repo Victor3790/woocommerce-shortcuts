@@ -71,7 +71,7 @@ jQuery( function ( $ ) {
 
         }
 
-        if( $('select[name="_billing_state"]').length ) {
+        /*if( $('select[name="_billing_state"]').length ) {
 
             if( typeof order_raw_data[4] !== 'undefined' && order_raw_data[4] !== '' ) {
 
@@ -82,9 +82,9 @@ jQuery( function ( $ ) {
     
             }
 
-        }
+        }*/
 
-        if( $('select[name="_billing_city"]').length ) {
+        /*if( $('select[name="_billing_city"]').length ) {
 
             if( typeof order_raw_data[5] !== 'undefined' && order_raw_data[5] !== '' ) {
 
@@ -99,11 +99,11 @@ jQuery( function ( $ ) {
     
             }
 
-        }
+        }*/
 
-        if( typeof order_raw_data[6] !== 'undefined' && order_raw_data[6] !== '' ) {
+        if( typeof order_raw_data[5] !== 'undefined' && order_raw_data[5] !== '' ) {
 
-            order_data['cif'] = order_raw_data[6].trim().replace(/\D/g, '');
+            order_data['cif'] = order_raw_data[5].trim().replace(/\D/g, '');
 
             if( $('input[name="_numero_de_identificacion"]').length ) {
 
