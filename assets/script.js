@@ -4,6 +4,7 @@ jQuery( function ( $ ) {
     $( '#wc_custom_shortcuts_add_order_data' ).click( function(){
 
         let billing_order_data_column = $( 'input[name^="_billing_"]' ).parents( '.order_data_column' );
+        let shipping_order_data_column = $( 'input[name^="_shipping_"]' ).parents( '.order_data_column' );
         let order_raw_data = $( '#wc_custom_shortcuts_order_data' ).val().split( '\n' );
 
         if( order_raw_data[0] === '' )
@@ -35,11 +36,13 @@ jQuery( function ( $ ) {
 
         order_data['name'] = name;
         $('input[name="_billing_first_name"]').val( order_data['name'] );
+        $('input[name="_shipping_first_name"]').val( order_data['name'] );
         
         if( typeof last_name !== 'undefined'  ) {
 
             order_data['last_name'] = last_name;
             $('input[name="_billing_last_name"]').val( order_data['last_name'] );
+            $('input[name="_shipping_last_name"]').val( order_data['last_name'] );
 
         }
 
@@ -47,6 +50,7 @@ jQuery( function ( $ ) {
 
             order_data['phone'] = order_raw_data[1].trim().replace(/\D/g, '');
             $('input[name="_billing_phone"]').val( order_data['phone'] );
+            $('input[name="_shipping_phone"]').val( order_data['phone'] );
 
         }
 
@@ -61,6 +65,7 @@ jQuery( function ( $ ) {
 
             order_data['address'] = order_raw_data[3].trim();
             $('input[name="_billing_address_1"]').val( order_data['address'] );
+            $('input[name="_shipping_address_1"]').val( order_data['address'] );
 
         }
 
@@ -68,6 +73,9 @@ jQuery( function ( $ ) {
 
             $('select[name="_billing_country"]').find('option[value="CO"]').prop( 'selected', true );
             $('select[name="_billing_country"]').trigger('change');
+
+            $('select[name="_shipping_country"]').find('option[value="CO"]').prop( 'selected', true );
+            $('select[name="_shipping_country"]').trigger('change');
 
         }
 
@@ -101,9 +109,9 @@ jQuery( function ( $ ) {
 
         }*/
 
-        if( typeof order_raw_data[5] !== 'undefined' && order_raw_data[5] !== '' ) {
+        if( typeof order_raw_data[4] !== 'undefined' && order_raw_data[4] !== '' ) {
 
-            order_data['cif'] = order_raw_data[5].trim().replace(/\D/g, '');
+            order_data['cif'] = order_raw_data[4].trim().replace(/\D/g, '');
 
             if( $('input[name="_numero_de_identificacion"]').length ) {
 
@@ -133,6 +141,13 @@ jQuery( function ( $ ) {
 
         billing_order_data_column.find( '.edit_address' ).show();
         billing_order_data_column.find( '.address' ).hide();
+        shipping_order_data_column.find( '.edit_address' ).show();
+        shipping_order_data_column.find( '.address' ).hide();
+
+        $( 'label.cxccoo-order-save-actions' ).show();
+
+        $( 'label.cxccoo-order-save-actions' ).find( 'input#cxccoo-save-billing-address-input' ).prop( 'checked', true );
+        $( 'label.cxccoo-order-save-actions' ).find( 'input#cxccoo-save-shipping-address-input' ).prop( 'checked', true );
 
     });
 
