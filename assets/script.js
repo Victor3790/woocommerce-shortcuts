@@ -23,7 +23,7 @@ jQuery( function ( $ ) {
 
         } else if( full_name.length == 3 ) {
 
-            name = full_name[0];
+            name = full_name[0] + ' ' + full_name[1];
             last_name = full_name[2];
 
         } else if( full_name.length == 4 ) {
