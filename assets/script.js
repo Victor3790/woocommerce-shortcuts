@@ -77,6 +77,22 @@ jQuery( function ( $ ) {
             $('select[name="_shipping_country"]').find('option[value="CO"]').prop( 'selected', true );
             $('select[name="_shipping_country"]').trigger('change');
 
+            // Change shipping state
+
+            $( 'select#_billing_state' ).on( 'select2:select', function( e ) {
+
+                $( 'select#_shipping_state' ).val( e.params.data.id ).trigger('change');
+
+            });
+
+            // Change shipping city
+
+            $( 'select#_billing_city' ).on( 'change', function() {
+
+                $( 'select#_shipping_city' ).val( $(this).find( "option:selected" ).val() );
+               
+            });
+
         }
 
         /*if( $('select[name="_billing_state"]').length ) {
